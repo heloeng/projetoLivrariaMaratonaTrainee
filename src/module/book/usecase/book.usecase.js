@@ -44,7 +44,7 @@ class BookUseCase {
   static delete(req, res) {
     const stmt = db.prepare('delete from book where id=?')
     stmt.run(req.params.id)
-    return res.status(201).send();
+    return res.status(204).send();
   }
 }
 

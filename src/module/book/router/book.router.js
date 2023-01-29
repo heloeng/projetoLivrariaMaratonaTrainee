@@ -6,7 +6,7 @@ const bookRouter = express.Router();
 
 bookRouter.get('/book', BookUseCase.getAll)
 bookRouter.get('/book/:id', BookUseCase.getOne)
-bookRouter.post('/book/:id', BookUseCase.insert)
+bookRouter.post('/book', BookUseCase.insert)
 bookRouter.patch('/book/:id', BookUseCase.update)
 bookRouter.delete('/book/:id', BookUseCase.delete)
 
