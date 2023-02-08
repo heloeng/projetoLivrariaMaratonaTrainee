@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Primeira tela</title>
+</head>
+
+<body>
+  <div id="conteudo">
+    <h3>Livros</h3>
+    <div>
+      <table border="">
+        <thead>
+          <td>ID</td>
+          <td>Título</td>
+          <td>Editora</td>
+          <td>Data de lançamento</td>
+          <td>Ações</td>
+        </thead>
+        <tbody id="coluna">
+          <!-- //:key="livro.id : significa que terá um id única. Terá 04 propriedade
+          //mas o id não poderá se repetir -->
+          <!-- //livros é a variavel que recebe a lista de livros -->
+          <!-- //v-for é a mesma coisa que forech -->
+          <!-- "livro" é o nome da variavel escolhida -->
+          <!-- livros é o  nome da variável global que está dentro de 
+          de data  -->
+          <!-- livros: []. Foi declarado como um array vazio -->
+
+          <tr v-for="(livro) in livros" :key="livro.id">
+            <td>{{livro.id}}</td>
+            <td>{{livro.title}}</td>
+            <td>{{livro.publisher}}</td>
+            <td>{{livro.release_date}}</td>
+          </tr>
+          <!-- //linha vazia onde irá digitar-->
+          <tr>
+            <!-- //v-model="form.title" -->
+            <!-- vincula o input a variavel form title -->
+            <td><input type="text" disabled name="id" id="id"></td>
+            <td><input type="text" v-model="form.title" placeholder='Digite o title' name="title" id="title"></td>
+            <td><input type="text" v-model="form.publisher" placeholder='Digite o publisher' name="publisher"
+                id="publisher"></td>
+            <td><input type="text" v-model="form.release_date" placeholder='Digite o release_date' name="release_date"
+                id="release_date"></td>
+            <td><button @click="salvarLivro()">Salvar</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script>
+    Vue.createApp({
+      //metodo chamada data retorna um json
+      //é responsável por todas as variaveis do sistema
+      data() {
+        return {
+          //declar uma variavel pai chamada for
+          //é um objeto que tem as propriedades que quer salvar
+          form: {
+            title: '',
+            publisher: '',
+            release_date: '',
+          },
+          livros: []
+        }
+      },
+      //declarar métodos
+      methods: {
+        //função assincrona buscar livros
+        // O métod buscarLivros faz uma solicitação HTTP GET ao endpoint http://localhost/book para buscar
+        // uma lista de livros e a resposta é armazenada na variável livro
+        async buscarLivros() {
+          this.livros = await (await fetch('http://localhost:3000/book/', { method: 'GET' })).json();
+        },
+        async salvarLivro() {
+          var livro = {
+            title: this.form.title,
+            publisher: this.form.publisher,
+            release_date: this.form.release_date
+          };
+
+          response = await (await fetch('http://localhost:3000/book', {
+            method: 'POST',
+            //O método JSON. stringify() converte valores em javascript para uma String JSON. 
+            body: JSON.stringify(livro),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })).json();
+          this.livros.push(response)
+          // // console.log("response", response)
+        }
+
+
+      },
+
+      //função é executada quano o vue é montado
+      //quando ela executar chamará a função buscar livros e trará a lista atualizada
+      mounted() {
+        this.buscarLivros();
+      }
+      //vai montar o create app do vue em algum elemento cujo o id
+      // que é representado pela # seja coluna // <tbody id="coluna">
+    }).mount('#coluna')
+  </script>
+</body>
+
+</html>

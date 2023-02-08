@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Primeira tela</title>
+</head>
+
+<body>
+  <div id="conteudo">
+    <h3>Livros</h3>
+    <div>
+      <table border="">
+        <thead>
+          <td>ID</td>
+          <td>Título</td>
+          <td>Editora</td>
+          <td>Data de lançamento</td>
+          <td>Ações</td>
+        </thead>
+        <tbody id="coluna">
+          <tr v-for="(livro) in livros" :key="livro.id">
+            <td>{{livro.id}}</td>
+            <td>{{livro.title}}</td>
+            <td>{{livro.publisher}}</td>
+            <td>{{livro.release_date}}</td>
+          </tr>
+          <tr>
+            <td><input type="text" disabled name="id" id="id"></td>
+            <td><input type="text" v-model="form.title" placeholder='Digite o title' name="title" id="title"></td>
+            <td><input type="text" v-model="form.publisher" placeholder='Digite o publisher' name="publisher"
+                id="publisher"></td>
+            <td><input type="text" v-model="form.release_date" placeholder='Digite o release_date' name="release_date"
+                id="release_date"></td>
+            <td><button @click="salvarLivro()">Salvar</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script>
+    Vue.createApp({
+      data() {
+        return {
+          form: {
+            title: '',
+            publisher: '',
+            release_date: '',
+          },
+          livros: []
+        }
+      },
+      methods: {
+        async buscarLivros() {
+          this.livros = await (await fetch('http://localhost:3000/book/', { method: 'GET' })).json();
+        },
+        //   async salvarLivro() {
+        //     var livro = {
+        //       title: this.form.title,
+        //       publisher: this.form.publisher,
+        //       release_date: this.form.release_date
+        //     };
+
+        //     response = await (await fetch('http://localhost:3000/book', { method: 'POST', body: livro })).json();
+        //     this.livros.push(response)
+        //   }
+        // },
+
+        async salvarLivro() {
+          var livro = {
+            title: this.form.title,
+            publisher: this.form.publisher,
+            release_date: this.form.release_date
+          };
+
+          response = await (await fetch('http://localhost:3000/book', {
+            method: 'POST',
+            body: JSON.(livro),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })).json();
+          this.livros.push(response)
+        }
+      mounted() {
+          this.buscarLivros();
+        }
+      }).mount('#coluna')
+  </script>
+</body>
+
+</html>
